@@ -1,5 +1,5 @@
 #
-# Makefile build 'Cache coherence project' using Make
+# Makefile build 'Gremlins project' using Make
 #
 
 SOURCES = $(wildcard src/*.cpp)
