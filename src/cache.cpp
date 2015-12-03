@@ -3,59 +3,81 @@
 #include <stdio.h>
 #include "cache.h"
 #include "directory.h"
+
 using namespace std;
 
-Cache::Cache(int s,int a,int b, int n )
+/**
+ * Class constructor
+ *
+ * @s => cache size
+ * @a => association
+ * @b => block size
+ * @n => number of processors
+*/
+Cache::Cache( int s, int a, int b, int n )
 {
-   ulong i, j;
-   reads = readMisses = writes = 0; 
-   writeMisses = writeBacks = currentCycle = 0;
-   
-   processor_number = (ulong)(n);
+    /*! Initialize the attributes */
+    ulong i, j;
+    reads = readMisses = writes = 0; 
+    writeMisses = writeBacks = currentCycle = 0;
 
-   size       = (ulong)(s);
-   lineSize   = (ulong)(b);
-   assoc      = (ulong)(a);   
-   sets       = (ulong)((s/b)/a);
-   numLines   = (ulong)(s/b);
-   log2Sets   = (ulong)(log2(sets));
-   log2Blk    = (ulong)(log2(b));
-  
-   //*******************//
-   //initialize your counters here//
-   //*******************//
+    processor_number = (ulong)(n);
 
-   invalidations = cacheToCacheTransfers = 0;
- 
-   tagMask =0;
-   for(i=0;i<log2Sets;i++)
-   {
-		tagMask <<= 1;
+    size       = (ulong)(s);
+    lineSize   = (ulong)(b);
+    assoc      = (ulong)(a);   
+    sets       = (ulong)((s/b)/a);
+    numLines   = (ulong)(s/b);
+    log2Sets   = (ulong)(log2(sets));
+    log2Blk    = (ulong)(log2(b));
+
+    /*! Initialize the coherence cache counters here */
+    invalidations   = cacheToCacheTransfers = 0;
+    tagMask         = 0;
+
+    for( i = 0; i < log2Sets; i++ )
+    {
+        tagMask <<= 1;
         tagMask |= 1;
-   }
-   
-   /**create a two dimentional cache, sized as cache[sets][assoc]**/ 
-   cache = new cacheLine*[sets];
-   for(i=0; i<sets; i++)
-   {
-      cache[i] = new cacheLine[assoc];
-      for(j=0; j<assoc; j++) 
-      {
-	   cache[i][j].invalidate();
-      }
-   }
+    }
+
+    /**
+     * Create a two dimentional cache, sized as cache[sets][assoc]
+     * Set Associative Scheme
+    */
+    cache = new cacheLine*[sets];
+
+    for ( i = 0; i < sets; i++ )
+    {
+        cache[i] = new cacheLine[assoc];
+
+        for ( j = 0; j < assoc; j++ ) 
+        {
+            cache[i][j].invalidate();
+        }
+    }
 }
 
-/**you might add other parameters to Access()
-since this function is an entry point 
-to the memory hierarchy (i.e. caches)**/
-void Cache::Access(ulong addr, uchar op, Cache **cachesArray, Directory *directory)
+/**
+ * Process the command itself
+ * You might add other parameters to Access()
+ * since this function is an entry point 
+ * to the memory hierarchy (i.e. caches)
+ *
+ * @addr => cache address
+ * @op => command
+ * @cachesArray => cache Array pointer
+ * @directory => directory pointer
+*/
+void Cache::Access( ulong addr, uchar op, Cache **cachesArray, Directory *directory )
 {
-	currentCycle++;/*per cache global counter to maintain LRU order 
-			among cache ways, updated on every cache access*/
-        	
-   if(op == 'w') writes++;
-	else          reads++;
+    /*! per cache global counter to maintain LRU order 
+    among cache ways, updated on every cache access*/
+    currentCycle++;
+
+    /*! Check the operation */
+    if ( op == 'w' ) writes++;
+    else reads++;
 	
 	cacheLine * line = findLine(addr);
    ulong state;

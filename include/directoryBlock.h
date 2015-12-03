@@ -62,7 +62,7 @@ class directoryBlock
         /**
          * Class constructor
          *
-         * @n => number of blocks
+         * @n => number of processors
         */
         directoryBlock( int n )
         {

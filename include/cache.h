@@ -28,6 +28,8 @@
 
 using namespace std;
 
+class Directory;
+
 /*! Cache class */
 class Cache
 {
@@ -138,7 +140,7 @@ class Cache
 
         /*! Functions to handle bus transactions */
         void writeBack( ulong ) { writeBacks++; }
-        void Access( ulong,uchar,Cache**,Directory* );
+        void Access( ulong, uchar, Cache**, Directory* );
         void printStats();
         void updateLRU( cacheLine * );
 
