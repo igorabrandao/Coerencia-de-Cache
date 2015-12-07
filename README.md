@@ -1,6 +1,7 @@
 # README #
-** Visão Geral**
-Simulação de um sistema com caches, barramento, memória e um componente conectado à memória que realiza operações de coerência de cache. Nesta implementação, o Diretório identifica se as linhas das caches encontram-se em estado “limpo” ou “sujo” e realiza ações dependendo da solicitação e estado das linhas.
+
+### VISÃO GERAL ###
+* Simulação de um sistema com caches, barramento, memória e um componente conectado à memória que realiza operações de coerência de cache. Nesta implementação, o Diretório identifica se as linhas das caches encontram-se em estado “limpo” ou “sujo” e realiza ações dependendo da solicitação e estado das linhas.
 
 ### MEMBBROS DA EQUIPE ###
 * Igor A. Brandão
