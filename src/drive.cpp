@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string.h>
 #include <iostream>
+#include <iostream>
 
 #include "cache.h"
 #include "directory.h"
@@ -12,10 +13,10 @@ using namespace std;
 ifstream fin;
 FILE * pFile;
 
-int cache_size;
+int cache_size;			/*! L1 = 8k - 64k / L2 = 128k - 2mb */
 int cache_assoc;
-int blk_size;
-int num_processors;		/*1, 2, 4, 8*/
+int blk_size;			/*! 4b - 64b */
+int num_processors;		/*! 1, 2, 4, 8 */
 //int protocol;			/*! 0:MSI, 1:MESI, 2:MOESI */
 string fname;
 
@@ -48,15 +49,30 @@ void printBasicSettings()
 }
 
 /**
- * Run the test with the trace file
+ * Print the cache actual status
 */
-void runAutomaticTest()
+void printCache()
 {
+	/*! Print the basic settings */
+	//printf("========= Simulation results (Cache_%i) =========\n", i);
+	//cachesArray[i]->printStats();
+	printf("==================================================\n");
+}
+
+/**
+ * Run the test with the trace file
+ *
+ * @showSettings_ => bool to set if the cache settings will be
+ * 					 displayed or not
+*/
+void runAutomaticTest( bool showSettings_ )
+{
+	if ( showSettings_ == true )
+		printBasicSettings();
+
 	cout << endl << "<<< Inform the automatic test file: ";
 	cin >> fname;
 	cout << endl;
-
-	printBasicSettings();
 
  	/*! Try to read the trace file */
 	pFile = fopen (fname.c_str(),"r");
@@ -64,7 +80,7 @@ void runAutomaticTest()
 	if( pFile == 0 )
 	{
 		cout << endl << "<<< Problem reading the automatic test file >>>" << endl;
-		exit(0);
+		runAutomaticTest(false);
 	}
 	else
 	{
@@ -150,10 +166,6 @@ void runManualTest()
 		cout << "<<< Inform the command: ";
 		if ( scanf("%i %c %lx", &processor_number, &op, &address) == 3 )
 		{
-			cout << "processor_number = " << processor_number << endl;
-			cout << "op = " << op << endl;
-			cout << "address = " << address << endl;
-
 		    cachesArray[processor_number]->Access(address, op, cachesArray, directory);
 		    process_status = 1;
 		}
@@ -219,7 +231,7 @@ void inputHandler( int choice_ )
 
 		/*! Automatic test */
 		case 2:
-			runAutomaticTest();
+			runAutomaticTest(true);
 			break;
 
 		/*! Manual test */
@@ -233,6 +245,7 @@ void inputHandler( int choice_ )
 
 		/*! Print cache <cache number> */
 		case 5:
+			printCache();
 			break;
 
 		/*! Exit */

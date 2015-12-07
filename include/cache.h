@@ -40,7 +40,7 @@ class Cache
 
         /*! Cache attributes */
         ulong size, lineSize, assoc, sets, log2Sets, log2Blk, tagMask, numLines;
-        ulong reads,readMisses,writes,writeMisses,writeBacks;
+        ulong reads, readMisses, writes, writeMisses, writeBacks;
         ulong invalidations, cacheToCacheTransfers;
         ulong processor_number;
 
@@ -142,6 +142,8 @@ class Cache
         void writeBack( ulong ) { writeBacks++; }
         void Access( ulong, uchar, Cache**, Directory* );
         void printStats();
+        void printCache( ulong );
+        void printAllCaches();
         void updateLRU( cacheLine * );
 
         void Invalidate( ulong );
